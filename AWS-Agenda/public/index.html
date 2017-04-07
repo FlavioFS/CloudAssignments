@@ -7,16 +7,91 @@
 
 </head>
 <body>
-    <form>
-        <div class="photoPreview"></div>
-        <input class="photoFile" type="file" name="Photo"><br><br>
 
-        <label> Name: </label><br>
-        <input type="text" name="Name" placeholder="User name here..."><br>
+    <form onsubmit="" class="post" style="display:inline">
 
-        <label> E-mail: </label><br>
-        <input type="text" name="email" placeholder="User e-mail here..."><br>
     </form>
+
+
+    <div class="inlineBlock container">
+        <form id="post">
+            <div class="block">
+                <div class="photoPreview"></div>
+                <input class="photoFile" type="file" name="Photo">
+            </div>
+
+            <div class="block">
+                <label> Name: </label>
+                <input type="text" name="Name" placeholder="John Doe">
+            </div>
+
+            <div class="block">
+                <label> Nick: </label>
+                <input type="text" name="email" placeholder="JoePoe">
+            </div>
+
+            <div class="block">
+                <label> E-mail: </label>
+                <input type="email" name="email" placeholder="jd9001@misc.gov">
+            </div>
+
+            <div class="block">
+                <label> Fone: </label>
+                <input type="tel" name="email" placeholder="0123456789">
+            </div>
+
+            <div class="block">
+                <label> Birthday: </label>
+                <input type="date" name="email">
+            </div>
+
+            <div class="block">
+                <input class="postRadio" name="postRadio" value="update" type="radio" id="update">
+                <label class="postLabel">Update (Create)</label>
+            </div>
+
+            <div class="block">
+                <input class="postRadio" name="postRadio" value="delete" type="radio" id="delete">
+                <label class="postLabel">Delete</label>
+            </div>
+
+            <input type="submit" placeholder="Submit">
+        </form>
+    </div>
+
+    <div class="inlineBlock container">
+        <form id="get">
+            <div class="block">
+                <label> Name: </label>
+                <input type="text" name="Name" placeholder="John Doe">
+            </div>
+
+            <div class="block">
+                <label> Nick: </label>
+                <input type="text" name="email" placeholder="JoePoe">
+            </div>
+
+            <label> Birthday Range (from ~ to): </label>
+            <div class="block">
+                <input type="date" name="email">
+                <input type="date" name="email">
+            </div>
+
+            <div class="block">
+                <input class="postRadio" name="postRadio" value="update" type="radio" id="update">
+                <label class="postLabel">Update (Create)</label>
+            </div>
+
+            <div class="block">
+                <input class="postRadio" name="postRadio" value="delete" type="radio" id="delete">
+                <label class="postLabel">Delete</label>
+            </div>
+
+            <input type="submit" placeholder="Submit">
+        </form>
+    </div>
+
+    <div id="results" class="container"></div>
 
     <script type="text/javascript" src="jquery-3.2.0.min.js"></script>
     <script type="text/javascript" src="client.js"></script>

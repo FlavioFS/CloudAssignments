@@ -44,16 +44,28 @@ function onPhotoChange() {
 function main () {
     console.log("main");
     $(".photoFile").change(onPhotoChange);
+
+
 }
+
+
+/* ==================================================================
+ *    Requests
+ * ================================================================== */
+function onPostSubmit ()
+{
+
+}
+
 
 
 /* ==================================================================
  *    Socket.IO
  * ================================================================== */
 const socket = io.connect('http://localhost');
-socket.on( 'userpost',
-    function(data) { socket.broadcast.emit('userpost', data) }
-);
+socket.on( 'userpost', function(data) {
+    socket.broadcast.emit('userpost', data)
+});
 
 socket.on( 'userget',
     function(data) { socket.broadcast.emit('userget', data) }
