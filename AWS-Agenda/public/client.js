@@ -47,4 +47,22 @@ function main () {
 }
 
 
+/* ==================================================================
+ *    Socket.IO
+ * ================================================================== */
+const socket = io.connect('http://localhost');
+socket.on( 'userpost',
+    function(data) { socket.broadcast.emit('userpost', data) }
+);
+
+socket.on( 'userget',
+    function(data) { socket.broadcast.emit('userget', data) }
+);
+
+socket.on( 'userlist',
+    function(data) { socket.broadcast.emit('userlist', data) }
+);
+
+
+
 $("document").ready(main);

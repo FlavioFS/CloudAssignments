@@ -21,6 +21,9 @@
   },
   "homepage": "https://github.com/FlavioFS/AWS-Agenda#readme",
   "dependencies": {
-    "express": "^4.15.2"
+    "aws-sdk": "*",
+    "node-uuid": "*",
+    "express": "^4.15.2",
+    "socket.io": ">= 1.0"
   }
 }
