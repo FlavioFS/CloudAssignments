@@ -3,10 +3,10 @@
  */
 
 /* ==================================================================
- *    Const
+ *    Libraries
  * ================================================================== */
-const s3 = new aws.S3();
 const aws = require('aws-sdk');
+const s3 = new aws.S3();
 const uuid = require('node-uuid');
 const express = require('express');
 const app = express();
@@ -16,52 +16,113 @@ const port = 3000;
 
 
 /* ==================================================================
- *    Utility
+ *    AWS Init
  * ================================================================== */
-// Create a bucket and upload something into it
-var bucketName = 'node-sdk-sample-' + uuid.v4();
-var keyName = 'hello_world.txt';
+aws.config.update({region: 'us-west-2'});
+const bucketName = 'f30-awesome-bucket-2';
 
-function awsSample () {
-  s3.createBucket({Bucket: bucketName}, function() {
-    var params = {Bucket: bucketName, Key: keyName, Body: 'Hello World!'};
-    s3.putObject(params, function(err, data) {
-      if (err)
-        console.log(err);
-      else
-        console.log("Successfully uploaded data to " + bucketName + "/" + keyName);
+// S3
+function checkBucket ()
+{
+    let params = {
+        Bucket: bucketName,
+        CreateBucketConfiguration: {
+            LocationConstraint: "us-west-2"
+        }
+    };
+
+    s3.createBucket(params, (err, data) => {
+        if (err)
+            console.log("Cannot create this bucket:\n" + err);
+
+        else
+            console.log("Bucket created: " + params.Bucket);
     });
-  });
 }
-
-
-/* ==================================================================
- *    Express
- * ================================================================== */
-app.use(express.static(__dirname + '/public'));
+checkBucket();
 
 
 /* ==================================================================
  *    Socket.IO
  * ================================================================== */
-function onConnection (socket) {
-  socket.on( 'userpost',
-      function(data) { socket.broadcast.emit('userpost', data) }
-  );
-
-  socket.on( 'userget',
-      function(data) { socket.broadcast.emit('userget', data) }
-  );
-
-  socket.on( 'userlist',
-      function(data) { socket.broadcast.emit('userlist', data) }
-  );
-}
-
-io.on('connection', onConnection);
+io.on('connection', () => console.log("socket.io connected") );
 
 
 /* ==================================================================
- *    HTTP
+ *    Express
+ * ================================================================== */
+var params = {
+    Bucket: bucketName,
+    Key: ''
+};
+
+app.use(express.static(__dirname + '/public'));
+
+app.get('/', function (request, response) {
+    response.sendFile('public/index.html', {root: __dirname});
+});
+
+app.get('/post', function (request, response) {
+    console.log("post:");
+    console.log(request.query);
+
+    if (request.query.name == '')
+        io.sockets.emit('post', { success: false, data: "Missing name." } );
+
+    else if (request.query.postRadio == 'update')
+    {
+        params.Key = request.query.name;
+        params.Body = request.query.photoUrl;
+        s3.putObject(params, (err, data) => {
+            if (err)
+            {
+                io.sockets.emit('post', { success: false, data: err } );
+                console.log(err);
+            }
+            else
+            {
+                io.sockets.emit('post', { success: true, data: data } );
+                console.log('post succeeded:');
+                console.log(data);
+            }
+        });
+    }
+});
+
+app.get('/get', function (request, response) {
+    console.log("get:");
+    console.log(request.query);
+
+    if (request.query.name == '')
+        io.sockets.emit('get', { success: false, data: "Missing name." } );
+
+    else
+    {
+        if (params.Body) delete params.Body;
+        params.Key = request.query.name;
+        s3.getObject(params, (err, data) => {
+            if (err)
+            {
+                io.sockets.emit('get', { success: false, data: err } );
+                console.log(err);
+            }
+            else
+            {
+                io.sockets.emit('get', { success: true, data: data.Body.toString() } );
+                console.log('get succeeded:');
+                console.log(data);
+            }
+        });
+    }
+});
+
+app.get('/list', function (request, response) {
+    io.sockets.emit('get', { data: "user list" });
+    console.log("list");
+});
+
+
+/* ==================================================================
+ *    Http
  * ================================================================== */
 http.listen(port, console.log("Listening on port: " + port));

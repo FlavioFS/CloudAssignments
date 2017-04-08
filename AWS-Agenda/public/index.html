@@ -7,22 +7,20 @@
 
 </head>
 <body>
-
-    <form onsubmit="" class="post" style="display:inline">
-
-    </form>
-
-
+    <!--
+    POST
+    -->
     <div class="inlineBlock container">
-        <form id="post">
+        <form id="post" action="/post">
             <div class="block">
-                <div class="photoPreview"></div>
-                <input class="photoFile" type="file" name="Photo">
+                <img id="photoPreview" class="block" src="assets/anonymous.png">
+                <input id="photoFile" type="file" name="photo">
+                <input id="photoUrl" type="text" name="photoUrl" placeholder="">
             </div>
 
             <div class="block">
                 <label> Name: </label>
-                <input type="text" name="Name" placeholder="John Doe">
+                <input type="text" name="name" placeholder="John Doe">
             </div>
 
             <div class="block">
@@ -55,44 +53,55 @@
                 <label class="postLabel">Delete</label>
             </div>
 
-            <input type="submit" placeholder="Submit">
+            <input id="postSubmit" type="submit" value="Submit">
         </form>
     </div>
 
+
+    <!--
+    GET
+    -->
     <div class="inlineBlock container">
-        <form id="get">
-            <div class="block">
-                <label> Name: </label>
-                <input type="text" name="Name" placeholder="John Doe">
-            </div>
+        <div class="block">
+            <form id="get" action="/get">
+                <div class="block">
+                    <label> Name: </label>
+                    <input type="text" name="name" placeholder="John Doe">
+                </div>
 
-            <div class="block">
-                <label> Nick: </label>
-                <input type="text" name="email" placeholder="JoePoe">
-            </div>
+                <div class="block">
+                    <label> Nick: </label>
+                    <input type="text" name="nick" placeholder="JoePoe">
+                </div>
 
-            <label> Birthday Range (from ~ to): </label>
-            <div class="block">
-                <input type="date" name="email">
-                <input type="date" name="email">
-            </div>
+                <label> Birthday Range (from ~ to): </label>
+                <div class="block">
+                    <input type="date" name="birthdayMin">
+                    <input type="date" name="birthdayMax">
+                </div>
 
-            <div class="block">
-                <input class="postRadio" name="postRadio" value="update" type="radio" id="update">
-                <label class="postLabel">Update (Create)</label>
-            </div>
+                <input type="submit" value="Search Contacts">
+            </form>
+        </div>
 
-            <div class="block">
-                <input class="postRadio" name="postRadio" value="delete" type="radio" id="delete">
-                <label class="postLabel">Delete</label>
-            </div>
-
-            <input type="submit" placeholder="Submit">
-        </form>
+        <div class="block">
+            <form action="/list">
+                <input type="submit" value="List All Contacts">
+            </form>
+        </div>
     </div>
 
+
+    <!--
+    RESULTS
+    -->
     <div id="results" class="container"></div>
 
+
+    <!--
+    SCRIPTS
+    -->
+    <script src="socket.io.js"></script>
     <script type="text/javascript" src="jquery-3.2.0.min.js"></script>
     <script type="text/javascript" src="client.js"></script>
 </body>
