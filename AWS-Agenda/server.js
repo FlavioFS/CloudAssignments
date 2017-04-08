@@ -19,7 +19,7 @@ const port = 3000;
  *    AWS Init
  * ================================================================== */
 aws.config.update({region: 'us-west-2'});
-const bucketName = 'f30-awesome-bucket-2';
+const bucketName = 'f30-awesome-bucket';
 
 // S3
 function checkBucket ()
@@ -66,10 +66,10 @@ app.get('/post', function (request, response) {
     console.log("post:");
     console.log(request.query);
 
-    if (request.query.name == '')
+    if (request.query.name === '')
         io.sockets.emit('post', { success: false, data: "Missing name." } );
 
-    else if (request.query.postRadio == 'update')
+    else if (request.query.postRadio === 'update')
     {
         params.Key = request.query.name;
         params.Body = request.query.photoUrl;
@@ -93,7 +93,7 @@ app.get('/get', function (request, response) {
     console.log("get:");
     console.log(request.query);
 
-    if (request.query.name == '')
+    if (request.query.name === '')
         io.sockets.emit('get', { success: false, data: "Missing name." } );
 
     else

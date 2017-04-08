@@ -16,12 +16,12 @@ const postSubmit = $('#postSubmit');
  *    Utils
  * ================================================================== */
 function toDataUrl(src, callback, outputFormat="image/png") {
-    var img = new Image();
+    let img = new Image();
     img.crossOrigin = 'Anonymous';
     img.onload = function() {
-        var canvas = document.createElement('CANVAS');
-        var ctx = canvas.getContext('2d');
-        var dataURL;
+        let canvas = document.createElement('CANVAS');
+        let ctx = canvas.getContext('2d');
+        let dataURL;
         canvas.height = this.height;
         canvas.width = this.width;
         ctx.drawImage(this, 0, 0);
@@ -40,7 +40,7 @@ function readURL(input) {
     console.log("readURL: " + input.files);
 
     if (input.files && input.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function (e) {
             console.log("readURL onload: " + e);
             photoPreview
