@@ -3,25 +3,68 @@
  */
 
 /* ==================================================================
- *    Libraries
+ *    Libraries and Constants
  * ================================================================== */
-const aws = require('aws-sdk');
-const s3 = new aws.S3();
 const uuid = require('node-uuid');
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = 3000;
+const aws = require('aws-sdk');
+
+// S3
+const s3 = new aws.S3();
+const bucketName = 'f30-awesome-bucket';
+
+// PostgreSQL
+const PgDAO = require('./PgDAO');
+const pgdao = new PgDAO();
+
+
+////// TEST SECTION -----------------------------------------------------------
+
+//// CREATE
+// Insert user
+// let columns = {
+//     name: 'Jason',
+//     nick: 'JJ',
+//     email: 'jason@jet.gov.uk',
+//     phone: '+5511977775555',
+//     birthday: '1991-12-25'
+// };
+// pgdao.queryInsertUser(columns, (result) => console.log(result));                 // Create User
+// pgdao.queryInsertFriend('Fritz', 'John Doe', (result) => console.log(result));   // Create Friends
+
+
+//// RETRIEVE
+// pgdao.queryRetrieveUser('Dan', (result) => console.log(result) );        // Get User
+// pgdao.queryRetrieveFriends('Dan', (result) => console.log(result) );   // Get Friends
+
+
+//// UPDATE
+// let newColumns = {
+//     name: 'zzz',
+//     nick: 'zzz',
+//     email: 'zzz@zzz.zzz',
+//     phone: '0101',
+//     birthday: '1999-07-08'
+// };
+// pgdao.queryUpdateUser('aaa', newColumns, (result) => console.log(result));
+
+
+//// DELETE
+// pgdao.queryDeleteFriend("zzz", "Jason", (result) => console.log(result));    // Delete Friends
+// pgdao.queryDeleteUser('zzz', (result) => console.log(result));               // Delete User
+
+// --------------------------------------------------------------------------
 
 
 /* ==================================================================
- *    AWS Init
+ *    S3
  * ================================================================== */
 aws.config.update({region: 'us-west-2'});
-const bucketName = 'f30-awesome-bucket';
 
-// S3
 function checkBucket ()
 {
     let params = {
@@ -40,6 +83,12 @@ function checkBucket ()
     });
 }
 checkBucket();
+
+
+/* ==================================================================
+ *    PostgreSQL
+ * ================================================================== */
+
 
 
 /* ==================================================================
@@ -66,10 +115,10 @@ app.get('/post', function (request, response) {
     console.log("post:");
     console.log(request.query);
 
-    if (request.query.name === '')
+    if (request.query.name == '')
         io.sockets.emit('post', { success: false, data: "Missing name." } );
 
-    else if (request.query.postRadio === 'update')
+    else if (request.query.postRadio == 'update')
     {
         params.Key = request.query.name;
         params.Body = request.query.photoUrl;
@@ -93,7 +142,7 @@ app.get('/get', function (request, response) {
     console.log("get:");
     console.log(request.query);
 
-    if (request.query.name === '')
+    if (request.query.name == '')
         io.sockets.emit('get', { success: false, data: "Missing name." } );
 
     else
