@@ -40,8 +40,6 @@ module.exports = class PgDAO {
         this.pool.on('error',
             () => console.error('idle client error', err.message, err.stack)
         );
-
-
     }
 
 
@@ -52,30 +50,18 @@ module.exports = class PgDAO {
     {
         console.log(queryString);
 
-        this.pool.query(queryString, function(err, res) {
-            if (err)
-            {
-                let result = {
-                    success: false,
-                    data: res,
-                    error: err
-                };
-                callback(result);
-                return console.error('error running query', err);
-            }
+        this.pool.query(queryString, function(err, data) {
+            callback({err: err, data: data});
 
-            let result = {
-                success: true,
-                data: res.rows
-            };
-            callback(result);
+            if (err)
+                console.error("error running query\n'" + queryString +"':\n", err);
         });
     }
 
 
     // CREATE -----------------------------------------------------------------
-    queryInsertUser (columns, callback) {
-
+    queryCreateUser (columns, callback)
+    {
         let queryString = "INSERT INTO users values (" +
             "'" + columns.name.toString()     + "', " +
             "'" + columns.nick.toString()     + "', " +
@@ -86,49 +72,94 @@ module.exports = class PgDAO {
         this.query(queryString, callback);
     }
 
-    queryInsertFriend (username, friendname, callback) {
-
-        let queryString = "INSERT INTO friends values (" +
-            "'" + username.toString()   + "', " +
-            "'" + friendname.toString() + "')";
-
-        this.query(queryString, callback);
-    }
+    // queryCreateFriend (username, friendname, callback) {
+    //
+    //     let queryString = "INSERT INTO friends values (" +
+    //         "'" + username.toString()   + "', " +
+    //         "'" + friendname.toString() + "')";
+    //
+    //     this.query(queryString, callback);
+    // }
 
 
     // RETRIEVE ---------------------------------------------------------------
-    queryRetrieveUser (username, callback) {
-
+    queryRetrieveUser (username, callback)
+    {
         let queryString = "SELECT * FROM users WHERE name='" + username + "'";
+        this.query(queryString, callback);
+    }
+
+    queryRetrieveUserList (callback)
+    {
+        let queryString = "SELECT * FROM users";
+        this.query(queryString, callback);
+    }
+
+    queryRetrieveUsersByParams (params, callback)
+    {
+        let queryString = "SELECT * FROM users WHERE ";
+        let and = false;
+
+        if (params.name && params.name != '')
+        {
+            queryString += "name='" + params.name + "'";
+            and = true;
+        }
+
+        if (params.nick && params.nick != '')
+        {
+            if (and)
+                queryString += ' and ';
+
+            queryString += "nick='" + params.birthdayMin + "'";
+            and = true;
+        }
+
+        if (params.birthdayMin && params.birthdayMin != '')
+        {
+            if (and)
+                queryString += ' and ';
+
+            queryString += "birthday>='" + params.birthdayMin + "'";
+            and = true;
+        }
+
+        if (params.birthdayMax && params.birthdayMax != '')
+        {
+            if (and)
+                queryString += ' and ';
+
+            queryString += "birthday<='" + params.birthdayMax + "'";
+        }
 
         this.query(queryString, callback);
     }
 
-    queryRetrieveFriends (username, callback) {
-
-        let queryString =
-            "SELECT * " +
-            "FROM users " +
-            "WHERE " +
-            "users.name = (" +
-                "SELECT user1 " +
-                "FROM friends " +
-                "WHERE user2='" + username + "'" +
-            ") " +
-            "or " +
-            "users.name = (" +
-                "SELECT user2 " +
-                "FROM friends " +
-                "WHERE user1='" + username + "'" +
-            ")";
-
-        this.query(queryString, callback);
-    }
+    // queryRetrieveFriends (username, callback)
+    // {
+    //     let queryString =
+    //         "SELECT * " +
+    //         "FROM users " +
+    //         "WHERE " +
+    //         "users.name = (" +
+    //             "SELECT user1 " +
+    //             "FROM friends " +
+    //             "WHERE user2='" + username + "'" +
+    //         ") " +
+    //         "or " +
+    //         "users.name = (" +
+    //             "SELECT user2 " +
+    //             "FROM friends " +
+    //             "WHERE user1='" + username + "'" +
+    //         ")";
+    //
+    //     this.query(queryString, callback);
+    // }
 
 
     // UPDATE -----------------------------------------------------------------
-    queryUpdateUser (username, newColumns, callback) {
-
+    queryUpdateUser (username, newColumns, callback)
+    {
         let queryString = "UPDATE users SET " +
             "name='"     + newColumns.name.toString()     + "', " +
             "nick='"     + newColumns.nick.toString()     + "', " +
@@ -142,20 +173,19 @@ module.exports = class PgDAO {
 
 
     // DELETE -----------------------------------------------------------------
-    queryDeleteUser (username, callback) {
-
+    queryDeleteUser (username, callback)
+    {
         let queryString = "DELETE FROM users WHERE name='" + username + "'";
-
         this.query(queryString, callback);
     }
 
-    queryDeleteFriend (username, friendname, callback) {
-
-        let queryString = "DELETE FROM friends WHERE " +
-            "(user1='" + username + "' and user2='" + friendname + "')" +
-            " or " +
-            "(user1='" + friendname + "' and user2='" + username + "')";
-
-        this.query(queryString, callback);
-    }
+    // queryDeleteFriend (username, friendname, callback) {
+    //
+    //     let queryString = "DELETE FROM friends WHERE " +
+    //         "(user1='" + username + "' and user2='" + friendname + "')" +
+    //         " or " +
+    //         "(user1='" + friendname + "' and user2='" + username + "')";
+    //
+    //     this.query(queryString, callback);
+    // }
 };

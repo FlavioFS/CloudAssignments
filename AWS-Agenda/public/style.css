@@ -1,5 +1,6 @@
 *, #photoFile {
     color: white;
+    font-family: Verdana;
 }
 
 body {
@@ -8,6 +9,20 @@ body {
 
 input, button {
     color: black;
+}
+
+input[type=submit]:hover
+{
+    background-color: mediumspringgreen; !important;
+}
+
+input[type=submit]:hover
+{
+    background-color: mediumspringgreen; !important;
+}
+input[type=submit][disabled]
+{
+    background-color: dimgrey; !important;
 }
 
 .container {

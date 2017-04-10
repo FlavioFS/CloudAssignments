@@ -32,8 +32,8 @@ const pgdao = new PgDAO();
 //     phone: '+5511977775555',
 //     birthday: '1991-12-25'
 // };
-// pgdao.queryInsertUser(columns, (result) => console.log(result));                 // Create User
-// pgdao.queryInsertFriend('Fritz', 'John Doe', (result) => console.log(result));   // Create Friends
+// pgdao.queryCreateUser(columns, (result) => console.log(result));                 // Create User
+// pgdao.queryCreateFriend('Fritz', 'John Doe', (result) => console.log(result));   // Create Friends
 
 
 //// RETRIEVE
@@ -56,6 +56,7 @@ const pgdao = new PgDAO();
 // pgdao.queryDeleteFriend("zzz", "Jason", (result) => console.log(result));    // Delete Friends
 // pgdao.queryDeleteUser('zzz', (result) => console.log(result));               // Delete User
 
+
 // --------------------------------------------------------------------------
 
 
@@ -64,6 +65,7 @@ const pgdao = new PgDAO();
  * ================================================================== */
 aws.config.update({region: 'us-west-2'});
 
+// S3 Init
 function checkBucket ()
 {
     let params = {
@@ -83,11 +85,186 @@ function checkBucket ()
 }
 checkBucket();
 
+// S3 Events
+function s3Put (request)
+{
+    let params = {
+        Bucket: bucketName,
+        Key: request.query.name,
+        Body: request.query.photoUrl
+    };
+
+    s3.putObject(params, (err, data) => {
+        io.sockets.emit('s3update', { data: data, err: err} );
+
+        if (err)
+            console.log('S3 update error');
+        else
+            console.log(data);
+    });
+}
+
+function s3Delete (request) {
+    let params = {
+        Bucket: bucketName,
+        Key: request.query.name,
+    };
+
+    s3.deleteObject(params, (err, data) => {
+        io.sockets.emit('s3delete', { err: err, data: data } );
+
+        if (err)
+            console.log('S3 delete error');
+        else
+            console.log(data);
+    });
+}
+
+function s3Get (request, callback)
+{
+    let params = {
+        Bucket: bucketName,
+        Key: request.query.name,
+    };
+
+    s3.getObject(params, (err, data) => {
+        callback({ err: err, data: data });
+
+        if (err)
+            console.log('S3 get error');
+        else
+            console.log(data);
+    });
+}
+
 
 /* ==================================================================
  *    PostgreSQL
  * ================================================================== */
+function pgPost (request)
+{
+    // Checks if user exists
+    pgdao.queryRetrieveUser(request.query.name, (result) => {
 
+        // Query fail
+        if (result.err)
+        {
+            io.sockets.emit('pgPost', result.err );
+            console.log(result);
+        }
+
+        // Query success
+        else
+        {
+            let columns = {
+                name: request.query.name,
+                nick: request.query.nick,
+                email: request.query.email,
+                phone: request.query.phone,
+                birthday: request.query.birthday
+            };
+
+            // User already exists: Update
+            if (result.data.rowCount > 0)
+                pgUpdate(columns);
+
+            // User does not exist: Create
+            else
+                pgCreate(columns);
+        }
+
+    });
+}
+
+function pgCreate (columns)
+{
+    pgdao.queryCreateUser(columns, (result) => {
+        io.sockets.emit('pgCreate', result );
+
+        console.log("PG create:");
+        console.log(result);
+    });
+}
+
+function pgUpdate (columns)
+{
+    pgdao.queryUpdateUser(columns.name, columns, (result) => {
+        io.sockets.emit('pgUpdate', result );
+
+        console.log("PG update:");
+        console.log(result);
+    });
+}
+
+function pgDelete (request)
+{
+    pgdao.queryDeleteUser(request.query.name, (result) => {
+        io.sockets.emit('pgDel', result);
+
+        console.log("PG delete:");
+        console.log(result);
+    });
+}
+
+function pgRetrieveUsersByParams (request)
+{
+    let params = {
+        name: request.query.name,
+        nick: request.query.nick,
+        birthdayMin: request.query.birthdayMin,
+        birthdayMax: request.query.birthdayMax
+    };
+
+    console.log("PG search:");
+    pgdao.queryRetrieveUsersByParams(params, (result) => attachPhotosFromS3AndSend('pgGet', result));
+}
+
+function pgListUsers (request)
+{
+    console.log("PG list:");
+    pgdao.queryRetrieveUserList((result) => attachPhotosFromS3AndSend('pgList', result));
+}
+
+function attachPhotosFromS3AndSend (emitSignal, result) {
+    if (!result.err)
+    {
+        let params = {
+            Bucket: bucketName,
+            Key: result.data.rows[0].name,
+        };
+
+        let packet = [];
+        let i = 0;
+
+        function recursiveCallback (err, data)
+        {
+            if (!err)
+                packet.push({
+                    photo: data.Body.toString(),
+                    user: result.data.rows[i]
+                });
+
+            else
+                packet.push({
+                    photo: null,
+                    user: result.data.rows[i]
+                });
+
+            i++;
+            if (i >= result.data.rowCount || i<0)
+            {
+                io.sockets.emit(emitSignal, packet);
+                console.log(packet);
+                return;
+            }
+
+            params.Key = result.data.rows[i].name;
+            s3.getObject(params, recursiveCallback);
+        }
+
+        s3.getObject(params, recursiveCallback);
+    }
+}
 
 
 /* ==================================================================
@@ -99,11 +276,6 @@ io.on('connection', () => console.log("socket.io connected") );
 /* ==================================================================
  *    Express
  * ================================================================== */
-var params = {
-    Bucket: bucketName,
-    Key: ''
-};
-
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (request, response) {
@@ -111,62 +283,36 @@ app.get('/', function (request, response) {
 });
 
 app.get('/post', function (request, response) {
-    console.log("post:");
+    console.log("client post:");
     console.log(request.query);
 
-    if (request.query.name == '')
-        io.sockets.emit('post', { success: false, data: "Missing name." } );
-
-    else if (request.query.postRadio == 'update')
+    // Create or Update
+    if (request.query.postRadio == 'update')
     {
-        params.Key = request.query.name;
-        params.Body = request.query.photoUrl;
-        s3.putObject(params, (err, data) => {
-            if (err)
-            {
-                io.sockets.emit('post', { success: false, data: err } );
-                console.log(err);
-            }
-            else
-            {
-                io.sockets.emit('post', { success: true, data: data } );
-                console.log('post succeeded:');
-                console.log(data);
-            }
-        });
+        pgPost(request);    // PostgreSQL section
+        s3Put(request);     // S3 section
     }
+
+    else if (request.query.postRadio == 'delete')
+    {
+        pgDelete(request);  // PostgreSQL section
+        s3Delete(request);  // S3 section
+    }
+
 });
 
 app.get('/get', function (request, response) {
-    console.log("get:");
+    console.log("client get:");
     console.log(request.query);
 
-    if (request.query.name == '')
-        io.sockets.emit('get', { success: false, data: "Missing name." } );
-
-    else
-    {
-        if (params.Body) delete params.Body;
-        params.Key = request.query.name;
-        s3.getObject(params, (err, data) => {
-            if (err)
-            {
-                io.sockets.emit('get', { success: false, data: err } );
-                console.log(err);
-            }
-            else
-            {
-                io.sockets.emit('get', { success: true, data: data.Body.toString() } );
-                console.log('get succeeded:');
-                console.log(data);
-            }
-        });
-    }
+    pgRetrieveUsersByParams(request);   // PostgreSQL ans S3 nested
 });
 
 app.get('/list', function (request, response) {
-    io.sockets.emit('get', { data: "user list" });
-    console.log("list");
+    console.log("client list:");
+    console.log(request.query);
+
+    pgListUsers(request);   // PostgreSQL ans S3 nested
 });
 
 
