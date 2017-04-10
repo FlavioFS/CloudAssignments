@@ -13,7 +13,7 @@ const photoPreview = $('#photoPreview');
 const photoUrl = $('#photoUrl');
 const postSubmit = $('#postSubmit');
 const results = $('#results');
-
+const lamp = $('.lamp');
 
 /* ==================================================================
  *    Utils
@@ -90,15 +90,22 @@ function main () {
         readURL(this);
     });
 
+    postSubmit.click( () => {
+        lamp.removeClass('finished');
+    });
+
     const results = $('#results');
 
     // Socket.IO
-    socket.on( 'post',
-        (msg) => {
-            console.log("Posted!");
-            console.log(msg.data);
-        }
-    );
+    function postDone (msg) {
+        console.log(msg.data);
+        lamp.addClass('finished');
+    }
+
+    socket.on( 'post', postDone );
+    socket.on( 'pgCreate', postDone );
+    socket.on( 'pgUpdate', postDone );
+    socket.on( 'pgDelete', postDone );
 
     socket.on( 'pgGet', (msg) => {
         console.log(msg);

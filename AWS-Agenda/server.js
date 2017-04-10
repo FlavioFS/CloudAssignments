@@ -21,45 +21,6 @@ const PgDAO = require('./PgDAO');
 const pgdao = new PgDAO();
 
 
-////// TEST SECTION -----------------------------------------------------------
-
-//// CREATE
-// Insert user
-// let columns = {
-//     name: 'Jason',
-//     nick: 'JJ',
-//     email: 'jason@jet.gov.uk',
-//     phone: '+5511977775555',
-//     birthday: '1991-12-25'
-// };
-// pgdao.queryCreateUser(columns, (result) => console.log(result));                 // Create User
-// pgdao.queryCreateFriend('Fritz', 'John Doe', (result) => console.log(result));   // Create Friends
-
-
-//// RETRIEVE
-// pgdao.queryRetrieveUser('Dan', (result) => console.log(result) );        // Get User
-// pgdao.queryRetrieveFriends('Dan', (result) => console.log(result) );   // Get Friends
-
-
-//// UPDATE
-// let newColumns = {
-//     name: 'zzz',
-//     nick: 'zzz',
-//     email: 'zzz@zzz.zzz',
-//     phone: '0101',
-//     birthday: '1999-07-08'
-// };
-// pgdao.queryUpdateUser('aaa', newColumns, (result) => console.log(result));
-
-
-//// DELETE
-// pgdao.queryDeleteFriend("zzz", "Jason", (result) => console.log(result));    // Delete Friends
-// pgdao.queryDeleteUser('zzz', (result) => console.log(result));               // Delete User
-
-
-// --------------------------------------------------------------------------
-
-
 /* ==================================================================
  *    S3
  * ================================================================== */
@@ -199,7 +160,7 @@ function pgUpdate (columns)
 function pgDelete (request)
 {
     pgdao.queryDeleteUser(request.query.name, (result) => {
-        io.sockets.emit('pgDel', result);
+        io.sockets.emit('pgDelete', result);
 
         console.log("PG delete:");
         console.log(result);
@@ -296,6 +257,12 @@ app.get('/', function (request, response) {
 app.get('/post', function (request, response) {
     console.log("client post:");
     console.log(request.query);
+
+    if (!request.query.phone)
+        request.query.phone = 0;
+
+    if (!request.query.birthday)
+        request.query.birthday = '2000-01-01';
 
     // Create or Update
     if (request.query.postRadio == 'update')

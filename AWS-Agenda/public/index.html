@@ -11,6 +11,7 @@
     POST
     -->
     <div class="inlineBlock container">
+        <h2>Post</h2>
         <form id="post" action="/post">
             <div class="block">
                 <img id="photoPreview" class="block photo" src="assets/anonymous.png">
@@ -45,7 +46,7 @@
 
             <div class="block">
                 <input class="postRadio" name="postRadio" value="update" type="radio" id="update">
-                <label class="postLabel">Update (Create)</label>
+                <label class="postLabel">Post (Update or Create)</label>
             </div>
 
             <div class="block">
@@ -53,7 +54,14 @@
                 <label class="postLabel">Delete</label>
             </div>
 
-            <input id="postSubmit" type="submit" value="Submit">
+            <input class="inline" id="postSubmit" type="submit" value="Submit">
+
+            <!-- A light that signals if the puzzle is solved -->
+            <div class="lamp finished"> <!-- The light -->
+                <div></div> <!-- The glow -->
+                <div></div> <!-- The shadow -->
+            </div>
+
         </form>
     </div>
 
@@ -62,6 +70,7 @@
     GET
     -->
     <div class="inlineBlock container">
+        <h2>Get</h2>
         <div class="block">
             <form id="get" action="/get">
                 <div class="block">
