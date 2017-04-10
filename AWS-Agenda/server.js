@@ -216,54 +216,65 @@ function pgRetrieveUsersByParams (request)
     };
 
     console.log("PG search:");
-    pgdao.queryRetrieveUsersByParams(params, (result) => attachPhotosFromS3AndSend('pgGet', result));
+    pgdao.queryRetrieveUsersByParams(params, (result) => sendPhotosFromS3(result));
 }
 
 function pgListUsers (request)
 {
     console.log("PG list:");
-    pgdao.queryRetrieveUserList((result) => attachPhotosFromS3AndSend('pgList', result));
+    pgdao.queryRetrieveUserList((result) => sendPhotosFromS3(result));
 }
 
-function attachPhotosFromS3AndSend (emitSignal, result) {
-    if (!result.err)
+function sendPhotosFromS3 (result) {
+
+    if (result.err)
     {
-        let params = {
-            Bucket: bucketName,
-            Key: result.data.rows[0].name,
-        };
+        console.log(result.err);
+        return result;
+    }
 
-        let packet = [];
-        let i = 0;
+    if (result.data.rowCount == 0)
+    {
+        io.sockets.emit('pgGet', []);
+        return result;
+    }
 
-        function recursiveCallback (err, data)
+    let params = {
+        Bucket: bucketName,
+        Key: result.data.rows[0].name,
+    };
+
+    let i = 0;
+
+    function recursiveCallback (err, data)
+    {
+        if (!err)
+            io.sockets.emit('s3Get', {
+                photo: data.Body.toString(),
+                name: params.Key
+            });
+
+        else
+            io.sockets.emit('s3Get', {
+                photo: null,
+                name: params.Key
+            });
+
+        console.log('s3 query emit.');
+
+        i++;
+        if (i >= result.data.rowCount || i<0)
         {
-            if (!err)
-                packet.push({
-                    photo: data.Body.toString(),
-                    user: result.data.rows[i]
-                });
-
-            else
-                packet.push({
-                    photo: null,
-                    user: result.data.rows[i]
-                });
-
-            i++;
-            if (i >= result.data.rowCount || i<0)
-            {
-                io.sockets.emit(emitSignal, packet);
-                console.log(packet);
-                return;
-            }
-
-            params.Key = result.data.rows[i].name;
-            s3.getObject(params, recursiveCallback);
+            console.log('s3 query done.');
+            return;
         }
 
+        params.Key = result.data.rows[i].name;
         s3.getObject(params, recursiveCallback);
     }
+
+    io.sockets.emit('pgGet', result.data.rows);
+    s3.getObject(params, recursiveCallback);
 }
 
 

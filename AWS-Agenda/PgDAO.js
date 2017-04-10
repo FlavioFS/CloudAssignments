@@ -111,7 +111,7 @@ module.exports = class PgDAO {
             if (and)
                 queryString += ' and ';
 
-            queryString += "nick='" + params.birthdayMin + "'";
+            queryString += "nick='" + params.nick + "'";
             and = true;
         }
 
