@@ -28,6 +28,12 @@ img {
     overflow-y: scroll;
     background-color: #111;
     color: white;
+    font-size: 14px;
+    margin: 0 0 0 0;
+}
+
+.user {
+    background-color: #444;
 }
 
 /* INPUTS */
