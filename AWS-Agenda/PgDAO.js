@@ -34,7 +34,7 @@ module.exports = class PgDAO {
             host:       process.env.RDS_PGSQL_HOST,     // Server hosting the postgres database
             port:       process.env.RDS_PGSQL_PORT,     // default env var: PGPORT
             max: 10,                                    // max number of clients in the pool
-            idleTimeoutMillis: 30000,                   // how long a client is allowed to remain idle before being closed
+            idleTimeoutMillis: 120000,                  // how long a client is allowed to remain idle before being closed
         };
 
         this.pool = new this.pg.Pool(this.config);
