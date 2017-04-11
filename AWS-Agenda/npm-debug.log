@@ -1,0 +1,180 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.37
+4 verbose node symlink /usr/bin/node
+5 warn package.json aws-agenda@1.0.0 No README data
+6 verbose readDependencies using package.json deps
+7 verbose install where, deps [ '/home/344068/git/CloudAssignments/AWS-Agenda',
+7 verbose install   [ 'aws-sdk', 'express', 'socket.io', 'http', 'pg' ] ]
+8 info preinstall aws-agenda@1.0.0
+9 verbose readDependencies using package.json deps
+10 verbose cache add [ 'express@^4.15.2', null ]
+11 verbose cache add name=undefined spec="express@^4.15.2" args=["express@^4.15.2",null]
+12 verbose parsed url { protocol: null,
+12 verbose parsed url   slashes: null,
+12 verbose parsed url   auth: null,
+12 verbose parsed url   host: null,
+12 verbose parsed url   port: null,
+12 verbose parsed url   hostname: null,
+12 verbose parsed url   hash: null,
+12 verbose parsed url   search: null,
+12 verbose parsed url   query: null,
+12 verbose parsed url   pathname: 'express@^4.15.2',
+12 verbose parsed url   path: 'express@^4.15.2',
+12 verbose parsed url   href: 'express@^4.15.2' }
+13 verbose cache add [ 'socket.io@>= 1.0', null ]
+14 verbose cache add name=undefined spec="socket.io@>= 1.0" args=["socket.io@>= 1.0",null]
+15 verbose parsed url { protocol: null,
+15 verbose parsed url   slashes: null,
+15 verbose parsed url   auth: null,
+15 verbose parsed url   host: null,
+15 verbose parsed url   port: null,
+15 verbose parsed url   hostname: null,
+15 verbose parsed url   hash: null,
+15 verbose parsed url   search: null,
+15 verbose parsed url   query: null,
+15 verbose parsed url   pathname: 'socket.io@%3E=%201.0',
+15 verbose parsed url   path: 'socket.io@%3E=%201.0',
+15 verbose parsed url   href: 'socket.io@%3E=%201.0' }
+16 verbose cache add name="express" spec="^4.15.2" args=["express","^4.15.2"]
+17 verbose parsed url { protocol: null,
+17 verbose parsed url   slashes: null,
+17 verbose parsed url   auth: null,
+17 verbose parsed url   host: null,
+17 verbose parsed url   port: null,
+17 verbose parsed url   hostname: null,
+17 verbose parsed url   hash: null,
+17 verbose parsed url   search: null,
+17 verbose parsed url   query: null,
+17 verbose parsed url   pathname: '^4.15.2',
+17 verbose parsed url   path: '^4.15.2',
+17 verbose parsed url   href: '^4.15.2' }
+18 verbose addNamed [ 'express', '^4.15.2' ]
+19 verbose addNamed [ null, '>=4.15.2-0 <5.0.0-0' ]
+20 verbose cache add [ 'http@*', null ]
+21 verbose cache add name=undefined spec="http@*" args=["http@*",null]
+22 verbose parsed url { protocol: null,
+22 verbose parsed url   slashes: null,
+22 verbose parsed url   auth: null,
+22 verbose parsed url   host: null,
+22 verbose parsed url   port: null,
+22 verbose parsed url   hostname: null,
+22 verbose parsed url   hash: null,
+22 verbose parsed url   search: null,
+22 verbose parsed url   query: null,
+22 verbose parsed url   pathname: 'http@*',
+22 verbose parsed url   path: 'http@*',
+22 verbose parsed url   href: 'http@*' }
+23 verbose cache add name="socket.io" spec=">= 1.0" args=["socket.io",">= 1.0"]
+24 verbose parsed url { protocol: null,
+24 verbose parsed url   slashes: null,
+24 verbose parsed url   auth: null,
+24 verbose parsed url   host: null,
+24 verbose parsed url   port: null,
+24 verbose parsed url   hostname: null,
+24 verbose parsed url   hash: null,
+24 verbose parsed url   search: null,
+24 verbose parsed url   query: null,
+24 verbose parsed url   pathname: '%3E=%201.0',
+24 verbose parsed url   path: '%3E=%201.0',
+24 verbose parsed url   href: '%3E=%201.0' }
+25 verbose addNamed [ 'socket.io', '>= 1.0' ]
+26 verbose addNamed [ null, '>=1.0.0-0' ]
+27 verbose cache add name="http" spec="*" args=["http","*"]
+28 verbose parsed url { protocol: null,
+28 verbose parsed url   slashes: null,
+28 verbose parsed url   auth: null,
+28 verbose parsed url   host: null,
+28 verbose parsed url   port: null,
+28 verbose parsed url   hostname: null,
+28 verbose parsed url   hash: null,
+28 verbose parsed url   search: null,
+28 verbose parsed url   query: null,
+28 verbose parsed url   pathname: '*',
+28 verbose parsed url   path: '*',
+28 verbose parsed url   href: '*' }
+29 verbose addNamed [ 'http', '*' ]
+30 verbose addNamed [ null, '*' ]
+31 silly lockFile 67b29158-http http@*
+32 verbose lock http@* /home/344068/.npm/67b29158-http.lock
+33 verbose cache add [ 'pg@*', null ]
+34 verbose cache add name=undefined spec="pg@*" args=["pg@*",null]
+35 verbose parsed url { protocol: null,
+35 verbose parsed url   slashes: null,
+35 verbose parsed url   auth: null,
+35 verbose parsed url   host: null,
+35 verbose parsed url   port: null,
+35 verbose parsed url   hostname: null,
+35 verbose parsed url   hash: null,
+35 verbose parsed url   search: null,
+35 verbose parsed url   query: null,
+35 verbose parsed url   pathname: 'pg@*',
+35 verbose parsed url   path: 'pg@*',
+35 verbose parsed url   href: 'pg@*' }
+36 verbose cache add name="pg" spec="*" args=["pg","*"]
+37 verbose parsed url { protocol: null,
+37 verbose parsed url   slashes: null,
+37 verbose parsed url   auth: null,
+37 verbose parsed url   host: null,
+37 verbose parsed url   port: null,
+37 verbose parsed url   hostname: null,
+37 verbose parsed url   hash: null,
+37 verbose parsed url   search: null,
+37 verbose parsed url   query: null,
+37 verbose parsed url   pathname: '*',
+37 verbose parsed url   path: '*',
+37 verbose parsed url   href: '*' }
+38 verbose addNamed [ 'pg', '*' ]
+39 verbose addNamed [ null, '*' ]
+40 silly lockFile 8dbe2238-pg pg@*
+41 verbose lock pg@* /home/344068/.npm/8dbe2238-pg.lock
+42 verbose cache add [ 'aws-sdk@*', null ]
+43 verbose cache add name=undefined spec="aws-sdk@*" args=["aws-sdk@*",null]
+44 verbose parsed url { protocol: null,
+44 verbose parsed url   slashes: null,
+44 verbose parsed url   auth: null,
+44 verbose parsed url   host: null,
+44 verbose parsed url   port: null,
+44 verbose parsed url   hostname: null,
+44 verbose parsed url   hash: null,
+44 verbose parsed url   search: null,
+44 verbose parsed url   query: null,
+44 verbose parsed url   pathname: 'aws-sdk@*',
+44 verbose parsed url   path: 'aws-sdk@*',
+44 verbose parsed url   href: 'aws-sdk@*' }
+45 verbose cache add name="aws-sdk" spec="*" args=["aws-sdk","*"]
+46 verbose parsed url { protocol: null,
+46 verbose parsed url   slashes: null,
+46 verbose parsed url   auth: null,
+46 verbose parsed url   host: null,
+46 verbose parsed url   port: null,
+46 verbose parsed url   hostname: null,
+46 verbose parsed url   hash: null,
+46 verbose parsed url   search: null,
+46 verbose parsed url   query: null,
+46 verbose parsed url   pathname: '*',
+46 verbose parsed url   path: '*',
+46 verbose parsed url   href: '*' }
+47 verbose addNamed [ 'aws-sdk', '*' ]
+48 verbose addNamed [ null, '*' ]
+49 silly lockFile f740d1c2-aws-sdk aws-sdk@*
+50 verbose lock aws-sdk@* /home/344068/.npm/f740d1c2-aws-sdk.lock
+51 silly lockFile 67b29158-http http@*
+52 error Error: Attempt to unlock http@*, which hasn't been locked
+52 error     at unlock (/usr/lib/node_modules/npm/lib/utils/locker.js:44:11)
+52 error     at cb (/usr/lib/node_modules/npm/lib/cache/add-named.js:32:5)
+52 error     at /usr/lib/node_modules/npm/lib/cache/add-named.js:41:20
+52 error     at /usr/lib/node_modules/npm/lib/utils/locker.js:30:7
+52 error     at cb (/usr/lib/node_modules/npm/node_modules/lockfile/lockfile.js:149:38)
+52 error     at /usr/lib/node_modules/npm/node_modules/lockfile/lockfile.js:177:38
+52 error     at Object.oncomplete (fs.js:108:15)
+53 error If you need help, you may report this *entire* log,
+53 error including the npm and node versions, at:
+53 error     <http://github.com/npm/npm/issues>
+54 error System Linux 3.13.0-85-generic
+55 error command "/usr/bin/node" "/usr/bin/npm" "install"
+56 error cwd /home/344068/git/CloudAssignments/AWS-Agenda
+57 error node -v v0.10.37
+58 error npm -v 1.4.28
+59 verbose exit [ 1, true ]

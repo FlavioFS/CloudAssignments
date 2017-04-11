@@ -320,19 +320,30 @@ function pgDelete (request)
 	});
 }
 
-function pgRetrieveUsersByParams (request)
+function pgSearchUsers (request)
 {
-	let FILT = true;
-
-	if (request.query.name != '' || request.query.nick != ''){
-		request.query.birthdayMin = '';
-		request.query.birthdayMax = '';
-		FILT = false;
-	}
-
 	let params = {
 		name: request.query.name,
 		nick: request.query.nick,
+		birthdayMin: '',
+		birthdayMax: ''
+	};
+
+	var logTimer = process.hrtime();
+	var datetime = new Date ();
+
+	console.log("PG search:");
+	pgdao.queryRetrieveUsersByParams(params, (result) => {
+		dynamoPostLog('BUS', datetime, logTimer);
+		sendPhotosFromS3(result);
+	});
+}
+
+function pgFilterUsers (request)
+{
+	let params = {
+		name: '',
+		nick: '',
 		birthdayMin: request.query.birthdayMin,
 		birthdayMax: request.query.birthdayMax
 	};
@@ -342,12 +353,7 @@ function pgRetrieveUsersByParams (request)
 
 	console.log("PG search:");
 	pgdao.queryRetrieveUsersByParams(params, (result) => {
-
-		if (FILT)
-			dynamoPostLog('FILT', datetime, logTimer);
-		else
-			dynamoPostLog('BUS', datetime, logTimer);
-
+		dynamoPostLog('FILT', datetime, logTimer);
 		sendPhotosFromS3(result);
 	});
 }
@@ -466,7 +472,14 @@ app.get('/get', function (request, response) {
 	console.log("client get:");
 	console.log(request.query);
 
-	pgRetrieveUsersByParams(request);   // PostgreSQL ans S3 nested
+	pgSearchUsers(request);   // PostgreSQL ans S3 nested
+});
+
+app.get('/filt', function (request, response) {
+	console.log("client get:");
+	console.log(request.query);
+
+	pgFilterUsers(request);   // PostgreSQL ans S3 nested
 });
 
 app.get('/list', function (request, response) {

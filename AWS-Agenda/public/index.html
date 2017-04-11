@@ -10,7 +10,7 @@
     <!--
     POST
     -->
-    <div class="inlineBlock container">
+    <div class="inlineBlock container section">
         <h2>Post</h2>
         <form id="post" action="/post">
             <div class="block">
@@ -26,7 +26,7 @@
 
             <div class="block">
                 <label> Nick: </label>
-                <input type="text" name="nick" placeholder="JoePoe">
+                <input type="text" name="nick" placeholder="Johnnys">
             </div>
 
             <div class="block">
@@ -69,8 +69,8 @@
     <!--
     GET
     -->
-    <div class="inlineBlock container">
-        <h2>Get / Filt</h2>
+    <div class="inlineBlock container section">
+        <h2>Search</h2>
         <div class="block">
             <form id="get" action="/get">
                 <div class="block">
@@ -80,19 +80,28 @@
 
                 <div class="block">
                     <label> Nick: </label>
-                    <input id="busNick" type="text" name="nick" placeholder="JoePoe">
-                </div>
-
-                <label> Birthday Range (from ~ to): </label>
-                <div class="block">
-                    <input id="filtBirthMin" type="date" name="birthdayMin">
-                    <input id="filtBirthMax" type="date" name="birthdayMax">
+                    <input id="busNick" type="text" name="nick" placeholder="Johnnys">
                 </div>
 
                 <input type="submit" value="Search Contacts">
             </form>
         </div>
 
+        <br>
+        <h2>Filt</h2>
+        <div class="block">
+            <form action="/filt">
+                <label> Birthday Range (from ~ to): </label>
+                <div class="block">
+                    <input id="filtBirthMin" type="date" name="birthdayMin">
+                    <input id="filtBirthMax" type="date" name="birthdayMax">
+                    <input type="submit" value="Filter Contacts">
+                </div>
+            </form>
+        </div>
+
+        <br>
+        <h2>List</h2>
         <div class="block">
             <form action="/list">
                 <input type="submit" value="List All Contacts">
@@ -103,9 +112,9 @@
     <!--
     LOG
     -->
-    <div class="inlineBlock container">
+    <div class="inlineBlock container section">
         <h2>Log</h2>
-        <textarea class="inlineBlock container" name="log" id="log" cols="50" rows="14" readonly></textarea>
+        <textarea class="inlineBlock container" name="log" id="log" cols="40" rows="14" readonly></textarea>
     </div>
 
     <!--
