@@ -2,6 +2,8 @@
  * Created by MeronSoda on 09/04/2017.
  */
 
+"use strict";   // ES6
+
 /** PostgreSQL Data Access Object
  *
  */
