@@ -1,11 +1,13 @@
 *, #photoFile {
     color: white;
     font-family: Verdana;
+    font-size: 15px;
 }
 
 h2 {
     margin: 0 0 20px 0;
     text-align: center;
+    font-size: 25px;
 }
 
 body {
@@ -55,6 +57,12 @@ input[type=submit][disabled]
     display: block;
 }
 
+#log {
+    resize: none;
+    overflow-y: scroll;
+    background-color: black;
+    color: white;
+}
 
 #results {
     width: 95vw;

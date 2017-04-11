@@ -70,23 +70,23 @@
     GET
     -->
     <div class="inlineBlock container">
-        <h2>Get</h2>
+        <h2>Get / Filt</h2>
         <div class="block">
             <form id="get" action="/get">
                 <div class="block">
                     <label> Name: </label>
-                    <input type="text" name="name" placeholder="John Doe">
+                    <input id="busName" type="text" name="name" placeholder="John Doe">
                 </div>
 
                 <div class="block">
                     <label> Nick: </label>
-                    <input type="text" name="nick" placeholder="JoePoe">
+                    <input id="busNick" type="text" name="nick" placeholder="JoePoe">
                 </div>
 
                 <label> Birthday Range (from ~ to): </label>
                 <div class="block">
-                    <input type="date" name="birthdayMin">
-                    <input type="date" name="birthdayMax">
+                    <input id="filtBirthMin" type="date" name="birthdayMin">
+                    <input id="filtBirthMax" type="date" name="birthdayMax">
                 </div>
 
                 <input type="submit" value="Search Contacts">
@@ -100,11 +100,18 @@
         </div>
     </div>
 
+    <!--
+    LOG
+    -->
+    <div class="inlineBlock container">
+        <h2>Log</h2>
+        <textarea class="inlineBlock container" name="log" id="log" cols="50" rows="14" readonly></textarea>
+    </div>
 
     <!--
     RESULTS
     -->
-    <div id="results" class="container"></div>
+    <div id="results" class="block container"></div>
 
 
     <!--

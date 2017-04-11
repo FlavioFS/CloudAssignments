@@ -14,6 +14,12 @@ const photoUrl = $('#photoUrl');
 const postSubmit = $('#postSubmit');
 const results = $('#results');
 const lamp = $('.lamp');
+const busName = $('#busName');
+const busNick = $('#busNick');
+const filtBirthMin = $('#filtBirthMin');
+const filtBirthMax = $('#filtBirthMax');
+const log = $('#log');
+
 
 /* ==================================================================
  *    Utils
@@ -90,6 +96,24 @@ function main () {
         readURL(this);
     });
 
+
+    function clearInputsGET (source, input1, input2) {
+        if (source.val()) {
+            input1.val('');
+            input2.val('');
+        }
+    }
+
+    //// Cannot choose Birthday range and (Name or Nick)
+    // BUS code - Search by Name and/or Nick
+    busName.change( () => clearInputsGET(busName, filtBirthMin, filtBirthMax) );
+    busNick.change( () => clearInputsGET(busNick, filtBirthMin, filtBirthMax) );
+
+    // FILT code - Filter by birthday range
+    filtBirthMin.change( () => clearInputsGET(filtBirthMin, busName, busNick) );
+    filtBirthMax.change( () => clearInputsGET(filtBirthMax, busName, busNick) );
+
+
     postSubmit.click( () => {
         lamp.removeClass('finished');
     });
@@ -117,6 +141,10 @@ function main () {
         console.log(msg);
         if (msg.photo)
             $("#results label:contains('" + msg.name + "')").siblings('img').attr('src', msg.photo);
+    });
+
+    socket.on( 'log', (msg) => {
+        log.html(msg);
     });
 }
 
