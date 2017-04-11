@@ -74,15 +74,6 @@ module.exports = class PgDAO {
         this.query(queryString, callback);
     }
 
-    // queryCreateFriend (username, friendname, callback) {
-    //
-    //     let queryString = "INSERT INTO friends values (" +
-    //         "'" + username.toString()   + "', " +
-    //         "'" + friendname.toString() + "')";
-    //
-    //     this.query(queryString, callback);
-    // }
-
 
     // RETRIEVE ---------------------------------------------------------------
     queryRetrieveUser (username, callback)
@@ -137,27 +128,6 @@ module.exports = class PgDAO {
         this.query(queryString, callback);
     }
 
-    // queryRetrieveFriends (username, callback)
-    // {
-    //     let queryString =
-    //         "SELECT * " +
-    //         "FROM users " +
-    //         "WHERE " +
-    //         "users.name = (" +
-    //             "SELECT user1 " +
-    //             "FROM friends " +
-    //             "WHERE user2='" + username + "'" +
-    //         ") " +
-    //         "or " +
-    //         "users.name = (" +
-    //             "SELECT user2 " +
-    //             "FROM friends " +
-    //             "WHERE user1='" + username + "'" +
-    //         ")";
-    //
-    //     this.query(queryString, callback);
-    // }
-
 
     // UPDATE -----------------------------------------------------------------
     queryUpdateUser (username, newColumns, callback)
@@ -181,13 +151,4 @@ module.exports = class PgDAO {
         this.query(queryString, callback);
     }
 
-    // queryDeleteFriend (username, friendname, callback) {
-    //
-    //     let queryString = "DELETE FROM friends WHERE " +
-    //         "(user1='" + username + "' and user2='" + friendname + "')" +
-    //         " or " +
-    //         "(user1='" + friendname + "' and user2='" + username + "')";
-    //
-    //     this.query(queryString, callback);
-    // }
 };
