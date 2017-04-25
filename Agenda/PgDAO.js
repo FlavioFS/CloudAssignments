@@ -23,21 +23,10 @@ module.exports = class PgDAO {
     /* ==================================================================
      *    Constructor
      * ================================================================== */
-    constructor ()
+    constructor (config)
     {
         this._pg = require('pg');
-
-        this.config = {
-            user:       process.env.RDS_PGSQL_USERNAME, // default env var: PGUSER
-            database:   process.env.RDS_PGSQL_DBNAME,   // default env var: PGDATABASE
-            password:   process.env.RDS_PGSQL_PASSWORD, // default env var: PGPASSWORD
-            host:       process.env.RDS_PGSQL_HOST,     // Server hosting the postgres database
-            port:       process.env.RDS_PGSQL_PORT,     // default env var: PGPORT
-            max: 10,                                    // max number of clients in the pool
-            idleTimeoutMillis: 120000,                  // how long a client is allowed to remain idle before being closed
-        };
-
-        this.pool = new this.pg.Pool(this.config);
+        this.pool = new this.pg.Pool(config);
 
         this.pool.on('error',
             () => console.error('idle client error', err.message, err.stack)
@@ -78,13 +67,13 @@ module.exports = class PgDAO {
     // RETRIEVE ---------------------------------------------------------------
     queryRetrieveUser (username, callback)
     {
-        let queryString = "SELECT * FROM users WHERE name='" + username + "'";
+        let queryString = "SELECT * FROM users WHERE name='" + username + "' order by name";
         this.query(queryString, callback);
     }
 
     queryRetrieveUserList (callback)
     {
-        let queryString = "SELECT * FROM users";
+        let queryString = "SELECT * FROM users order by name";
         this.query(queryString, callback);
     }
 
@@ -125,6 +114,7 @@ module.exports = class PgDAO {
             queryString += "birthday<='" + params.birthdayMax + "'";
         }
 
+        queryString += " order by name";
         this.query(queryString, callback);
     }
 

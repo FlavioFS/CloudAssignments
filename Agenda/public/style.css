@@ -11,13 +11,13 @@ img {
 .container {
     margin: 10px 0 0 10px;
     padding: 10px 10px 10px 10px;
-    background-color: #252525;
+    background-color: #353535;
 }
 
 *, #photoFile {
     color: white;
     font-family: Verdana;
-    font-size: 15px;
+    font-size: 14px;
 }
 #photoFile:hover {
     background-color: mediumspringgreen;
@@ -33,7 +33,8 @@ img {
 }
 
 .user {
-    background-color: #444;
+    width: 300px;
+    background-color: #555;
 }
 
 /* INPUTS */
@@ -85,7 +86,7 @@ h2 {
 
 
 #results {
-    width: 90vw;
+    margin: 10px;
 }
 
 #photoUrl {

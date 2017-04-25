@@ -2,3 +2,5 @@
 node_modules/
 AWS-Agenda/node_modules/
 AWS-Agenda/npm-debug.log
+**/app.yaml
+**/key.json

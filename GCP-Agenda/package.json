@@ -1,0 +1,33 @@
+{
+  "name": "gcp-agenda",
+  "version": "1.0.0",
+  "description": "Assignment from a Cloud Computing class at university",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlavioFS/AWS-Agenda.git"
+  },
+  "keywords": [
+    "aws",
+    "agenda"
+  ],
+  "author": "Flavio Freitas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FlavioFS/AWS-Agenda/issues"
+  },
+  "homepage": "https://github.com/FlavioFS/AWS-Agenda#readme",
+  "start": "node gcp-server.js",
+  "dependencies": {
+    "@google-cloud/storage": "*",
+    "@google-cloud/bigtable": "*",
+    "express": "^4.15.2",
+    "http": "*",
+    "pg": "*",
+    "socket.io": ">= 1.0"
+  }
+}

@@ -126,16 +126,20 @@ function main () {
     }
 
     socket.on( 'post', postDone );
-    socket.on( 'pgCreate', postDone );
-    socket.on( 'pgUpdate', postDone );
-    socket.on( 'pgDelete', postDone );
+    socket.on( 'create', postDone );
+    socket.on( 'update', postDone );
+    socket.on( 'delete', postDone );
 
-    socket.on( 'pgGet', (msg) => {
+    socket.on( 'get', (msg) => {
+        console.log('GET MSG');
+        console.log(msg);
         results.html("");   // Clears results
         msgToDiv(msg);
     });
 
-    socket.on( 's3Get', (msg) => {
+    socket.on( 'photo', (msg) => {
+        console.log('photo');
+        console.log(msg);
         if (msg.photo)
             $("#results label:contains('" + msg.name + "')").siblings('img').attr('src', msg.photo);
     });

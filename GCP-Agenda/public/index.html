@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS Agenda</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <!--
+    POST
+    -->
+    <div class="inlineBlock container section">
+        <h2>Post</h2>
+        <form id="post" action="/post">
+            <div class="block">
+                <img id="photoPreview" class="block photo" src="assets/anonymous.png">
+                <label>Maximum size: 100x100</label>
+                <input id="photoFile" type="file" name="photo">
+                <input id="photoUrl" type="text" name="photoUrl" placeholder="">
+            </div>
+
+            <div class="block">
+                <label> Name: </label>
+                <input type="text" name="name" placeholder="John Doe">
+            </div>
+
+            <div class="block">
+                <label> Nick: </label>
+                <input type="text" name="nick" placeholder="Johnnys">
+            </div>
+
+            <div class="block">
+                <label> E-mail: </label>
+                <input type="email" name="email" placeholder="jd9001@misc.gov">
+            </div>
+
+            <div class="block">
+                <label> Fone: </label>
+                <input type="tel" name="phone" placeholder="0123456789">
+            </div>
+
+            <div class="block">
+                <label> Birthday: </label>
+                <input type="date" name="birthday">
+            </div>
+
+            <div class="block">
+                <input class="postRadio" name="postRadio" value="update" type="radio" id="update">
+                <label class="postLabel">Post (Update or Create)</label>
+            </div>
+
+            <div class="block">
+                <input class="postRadio" name="postRadio" value="delete" type="radio" id="delete">
+                <label class="postLabel">Delete</label>
+            </div>
+
+            <input class="inline" id="postSubmit" type="submit" value="Submit">
+
+            <!-- A light that signals if the puzzle is solved -->
+            <div class="lamp finished"> <!-- The light -->
+                <div></div> <!-- The glow -->
+                <div></div> <!-- The shadow -->
+            </div>
+
+        </form>
+    </div>
+
+
+    <!--
+    GET
+    -->
+    <div class="inlineBlock container section">
+        <h2>Search</h2>
+        <div class="block">
+            <form id="get" action="/get">
+                <div class="block">
+                    <label> Name: </label>
+                    <input id="busName" type="text" name="name" placeholder="John Doe">
+                </div>
+
+                <div class="block">
+                    <label> Nick: </label>
+                    <input id="busNick" type="text" name="nick" placeholder="Johnnys">
+                </div>
+
+                <input type="submit" value="Search Contacts">
+            </form>
+        </div>
+
+        <br>
+        <h2>Filt</h2>
+        <div class="block">
+            <form action="/filt">
+                <label> Birthday Range (from ~ to): </label>
+                <div class="block">
+                    <input id="filtBirthMin" type="date" name="birthdayMin">
+                    <input id="filtBirthMax" type="date" name="birthdayMax">
+                    <input type="submit" value="Filter Contacts">
+                </div>
+            </form>
+        </div>
+
+        <br>
+        <h2>List</h2>
+        <div class="block">
+            <form action="/list">
+                <input type="submit" value="List All Contacts">
+            </form>
+        </div>
+    </div>
+
+    <!--
+    LOG
+    -->
+    <div class="inlineBlock container section">
+        <h2>Log</h2>
+        <textarea class="inlineBlock container" name="log" id="log" cols="43" rows="19" readonly></textarea>
+    </div>
+
+    <!--
+    RESULTS
+    -->
+    <div id="results" class="block container"></div>
+
+
+    <!--
+    SCRIPTS
+    -->
+    <script src="socket.io.js"></script>
+    <script type="text/javascript" src="jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="client.js"></script>
+</body>
+</html>

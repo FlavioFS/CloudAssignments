@@ -7,23 +7,31 @@
 /* ==================================================================
  *    Utils
  * ================================================================== */
-// Calculates time string
-function getLogDateTime(date)
+// Calculates date string
+function getLogDate(date)
 {
 	let year  = date.getFullYear();
 	let month = date.getMonth() + 1;
 	let day   = date.getDate();
+
+	month = (month < 10 ? "0" : "") + month;
+	day = (day < 10 ? "0" : "") + day;
+
+	return year + "-" + month + "-" + day;
+}
+
+// Calculates datetime string
+function getLogDateTime(date)
+{
 	let hour  = date.getHours();
 	let min   = date.getMinutes();
 	let sec   = date.getSeconds();
 
-	month = (month < 10 ? "0" : "") + month;
-	day = (day < 10 ? "0" : "") + day;
 	hour = (hour < 10 ? "0" : "") + hour;
 	min = (min < 10 ? "0" : "") + min;
 	sec = (sec < 10 ? "0" : "") + sec;
 
-	return year + "-" + month + "-" + day + "/" + hour + ":" + min + ":" + sec;
+	return getLogDate(date) + "/" + hour + ":" + min + ":" + sec;
 }
 
 // Converts time to milliseconds
@@ -51,7 +59,15 @@ const bucketName = 'f30-awesome-bucket';
 
 // PostgreSQL
 const PgDAO = require('./PgDAO');
-const pgdao = new PgDAO();
+const pgdao = new PgDAO({
+    user:       process.env.RDS_PGSQL_USERNAME, // default env var: PGUSER
+    database:   process.env.RDS_PGSQL_DBNAME,   // default env var: PGDATABASE
+    password:   process.env.RDS_PGSQL_PASSWORD, // default env var: PGPASSWORD
+    host:       process.env.RDS_PGSQL_HOST,     // Server hosting the postgres database
+    port:       process.env.RDS_PGSQL_PORT,     // default env var: PGPORT
+    max: 10,                                    // max number of clients in the pool
+    idleTimeoutMillis: 120000                   // how long a client is allowed to remain idle before being closed
+});
 
 // DynamoDB
 const dynamoDB = new aws.DynamoDB();
@@ -186,8 +202,6 @@ function s3Put (request)
 	};
 
 	s3.putObject(params, (err, data) => {
-		io.sockets.emit('s3update', { data: data, err: err } );
-
 		if (err)
 			console.log('S3 update error');
 		else
@@ -202,8 +216,6 @@ function s3Delete (request) {
 	};
 
 	s3.deleteObject(params, (err, data) => {
-		io.sockets.emit('s3delete', { err: err, data: data } );
-
 		if (err)
 			console.log('S3 delete error');
 		else
@@ -211,24 +223,22 @@ function s3Delete (request) {
 	});
 }
 
-function s3Get (request, callback)
-{
+function s3Get (name) {
 	let params = {
 		Bucket: bucketName,
-		Key: request.query.name,
+		Key: name,
 	};
 
 	s3.getObject(params, (err, data) => {
-		callback({ err: err, data: data });
-
 		if (err)
-			console.log('S3 get error');
+			console.log('S3 delete error');
 		else
-			console.log(data);
+			io.sockets.emit('photo', {
+				name: name,
+				photo: data.Body.toString()
+			});
 	});
 }
-
-
 
 /* ==================================================================
  *    PostgreSQL
@@ -241,7 +251,7 @@ function pgPost (request)
 		// Query fail
 		if (result.err)
 		{
-			io.sockets.emit('pgPost', result.err );
+			io.sockets.emit('post', result.err );
 			console.log(result);
 		}
 
@@ -275,7 +285,7 @@ function pgCreate (columns)
 
 	pgdao.queryCreateUser(columns, (result) => {
 
-		io.sockets.emit('pgCreate', result );
+		io.sockets.emit('create', result );
 		console.log("PG create:");
 		console.log(result);
 
@@ -293,7 +303,7 @@ function pgUpdate (columns)
 
 	pgdao.queryUpdateUser(columns.name, columns, (result) => {
 
-		io.sockets.emit('pgUpdate', result );
+		io.sockets.emit('update', result );
 		console.log("PG update:");
 		console.log(result);
 
@@ -311,7 +321,7 @@ function pgDelete (request)
 
 	pgdao.queryDeleteUser(request.query.name, (result) => {
 
-		io.sockets.emit('pgDelete', result);
+		io.sockets.emit('delete', result);
 		console.log("PG delete:");
 		console.log(result);
 
@@ -337,7 +347,7 @@ function pgSearchUsers (request)
 	console.log("PG search:");
 	pgdao.queryRetrieveUsersByParams(params, (result) => {
 		dynamoPostLog('BUS', datetime, logTimer);
-		sendPhotosFromS3(result);
+		sendInfoAndPhotos(result);
 	});
 }
 
@@ -356,7 +366,7 @@ function pgFilterUsers (request)
 	console.log("PG search:");
 	pgdao.queryRetrieveUsersByParams(params, (result) => {
 		dynamoPostLog('FILT', datetime, logTimer);
-		sendPhotosFromS3(result);
+		sendInfoAndPhotos(result);
 	});
 }
 
@@ -368,60 +378,30 @@ function pgListUsers (request)
 	console.log("PG list:");
 	pgdao.queryRetrieveUserList((result) => {
 		dynamoPostLog('LIST', datetime, logTimer);
-		sendPhotosFromS3(result);
+		sendInfoAndPhotos(result);
 	});
 }
 
-function sendPhotosFromS3 (result) {
+function sendInfoAndPhotos (result) {
 
-	if (result.err)
-	{
+	if (result.err) {
 		console.log(result.err);
 		return result;
 	}
 
-	if (result.data.rowCount == 0)
-	{
-		io.sockets.emit('pgGet', []);
+	if (result.data.rowCount == 0) {
+		io.sockets.emit('get', []);
 		return result;
 	}
 
-	let params = {
-		Bucket: bucketName,
-		Key: result.data.rows[0].name,
-	};
 
-	let i = 0;
-
-	function recursiveCallback (err, data)
-	{
-		if (!err)
-			io.sockets.emit('s3Get', {
-				photo: data.Body.toString(),
-				name: params.Key
-			});
-
-		else
-			io.sockets.emit('s3Get', {
-				photo: null,
-				name: params.Key
-			});
-
-		console.log('s3 query emit.');
-
-		i++;
-		if (i >= result.data.rowCount || i<0)
-		{
-			console.log('s3 query done.');
-			return;
-		}
-
-		params.Key = result.data.rows[i].name;
-		s3.getObject(params, recursiveCallback);
+	// Formats date
+	for (let j = 0; j < result.data.rowCount; j++) {
+		result.data.rows[j].birthday = getLogDate(result.data.rows[j].birthday);
+		s3Get(result.data.rows[j].name);
 	}
 
-	io.sockets.emit('pgGet', result.data.rows);
-	s3.getObject(params, recursiveCallback);
+	io.sockets.emit('get', result.data.rows);
 }
 
 
