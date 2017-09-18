@@ -26,7 +26,7 @@ Theory only:
   - [x] Eucalyptus
   - [x] Computer Security
 
-### Final Project
+## Final Project
 > Cloud-based real-time multiplatform multiplayer game
 
 [Download Last Build](https://meronsoda.itch.io/pong8001)
